@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="lbs.push.mapper.ReqMapper">
+	<resultMap type="Soft" id="SoftResult" extends="LbsResult">
+		<id property="sid" column="id" />
+		<result property="sname" column="name" />
+		<result property="apk" column="apk" />
+		<result property="sindex" column="wareindex" />
+		<result property="spck" column="pck" />
+		<result property="icon" column="icon" />
+		<result property="code" column="npcode" />
+		<result property="img01" column="img01" />
+		<result property="img02" column="img02" />
+		<result property="title" column="info" />
+		<result property="info1" column="info1" />
+		<result property="info2" column="info2" />
+		<result property="type" column="softtype" />
+	</resultMap>
+	<resultMap type="LBS" id="LbsResult">
+		<result property="province" column="province" />
+		<result property="city" column="city" />
+		<result property="longitude" column="longitude" />
+		<result property="latitude" column="latitude" />
+		<result property="radius" column="radius" />
+	</resultMap>
+	<resultMap type="Adv" id="AdvResult">
+		<id property="aid" column="id" />
+		<result property="advname" column="name" />
+		<result property="apkurl" column="apk" />
+		<result property="linkurl" column="linkurl" />
+		<result property="advindex" column="advindex" />
+		<result property="icon" column="logo" />
+		<result property="priority" column="priority" />
+		<result property="type" column="advtype" />
+		<result property="province" column="province" />
+		<result property="city" column="city" />
+		<result property="longitude" column="longitude" />
+		<result property="latitude" column="latitude" />
+		<result property="radius" column="radius" />
+	</resultMap>
+	<select id="getTestsoft" resultMap="SoftResult">
+		SELECT id, name, pck, icon,
+		info1,info,npcode,SUBSTR(pushimg,1,INSTR(pushimg,',')-1) img01,
+		SUBSTR(pushimg,INSTR(pushimg,',')+1,LENGTH(pushimg))
+		img02,wareindex,apk, info2 FROM zy_soft WHERE npstatus=2 AND company=0
+		ORDER BY npcode ASC
+	</select>
+	<select id="getTestadv" resultMap="AdvResult">
+		SELECT
+		id,NAME,INFO,LINKURL,ADVINDEX,PRIORITY,logo FROM zy_adv WHERE STATUS=2
+		ORDER BY PRIORITY
+	</select>
+	<select id="getsoftResult" resultMap="SoftResult">
+		SELECT id, name, pck, icon,
+		info1,info,npcode,SUBSTR(pushimg,1,INSTR(pushimg,',')-1) img01,
+		SUBSTR(pushimg,INSTR(pushimg,',')+1,LENGTH(pushimg))
+		img02,wareindex,apk,
+		info2,softtype,province,city,longitude,latitude,radius FROM zy_soft
+		WHERE npstatus=2 AND company=0 AND   (FIND_IN_SET(#{operation},operation)   OR operation=0)  and npcode >#{code}
+		ORDER BY npcode ASC limit 0,1
+	</select>
+	<select id="getadvResult" resultMap="AdvResult">
+		SELECT
+		id,NAME,INFO,LINKURL,ADVINDEX,PRIORITY,logo,advtype,province,city,longitude,latitude,radius
+		FROM zy_adv WHERE STATUS=2 and PRIORITY>#{code} ORDER BY PRIORITY
+		limit 0,1
+	</select>
+</mapper>

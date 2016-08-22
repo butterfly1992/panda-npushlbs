@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="lbs.push.mapper.OperMapper">
+	<insert id="insertIndex" parameterType="Param">
+		INSERT INTO
+		np_ori_req(imei,imsi,
+		<if test="operate==0">nindex,</if>
+		<if test="operate==5">entindex,</if>
+		<if test="operate==4">setindex,</if>
+		<if test="operate==6">delindex,</if>
+		time)
+		VALUES
+		(#{imei},#{imsi},#{wareindex},#{time});
+	</insert>
+	<update id="updateIndex" parameterType="Req">
+		UPDATE np_ori_req
+		<set>
+			<if test="nindex !=null">nindex=#{nindex},</if>
+			<if test="entindex !=null">entindex=#{entindex},</if>
+			<if test="setindex !=null">setindex=#{setindex},</if>
+			<if test="delindex !=null">delindex=#{delindex},</if>
+		</set>
+		WHERE imei=#{imei} and imsi=#{imsi} and time=#{time}
+	</update>
+	<update id="updateNoticeSetup" parameterType="Param">
+		UPDATE np_ori_noticesetup
+		<set>
+			<if test="operate==0">noticec=noticec+1,</if>
+			<if test="operate==4">setcount=setcount+1,</if>
+		</set>
+		WHERE APPID=#{appid} and gysdkv=#{version} and time=#{time}
+	</update>
+	<insert id="insertNoticeSetup" parameterType="Param">
+		INSERT INTO
+		np_ori_noticesetup(APPID,noticec,setcount,TIME,gysdkv)
+		VALUES (#{appid},
+		<if test="operate==0">1,0,</if>
+		<if test="operate==4">0,1,</if>
+		#{time},#{version});
+	</insert>
+	<update id="updateOper" parameterType="Param">
+		UPDATE np_ori_aoper
+		<set>
+			<if test="operate==0">notice=notice+1,</if>
+			<if test="operate==1">screen=screen+1,</if>
+			<if test="operate==2">click=click+1,</if>
+			<if test="operate==3">download=download+1,</if>
+			<if test="operate==4">setup=setup+1,</if>
+		</set>
+		WHERE APPID=#{appid} and sid=#{sid} and time=#{time} and
+		GYSDKV=#{version}
+	</update>
+	<insert id="insertOper" parameterType="Param">
+		INSERT INTO
+		np_ori_aoper(APPID,sid,notice,screen,click,download,setup,TIME,gysdkv)
+		VALUES
+		(#{appid},#{sid},
+		<if test="operate==0">1,0,0,0,0,</if>
+		<if test="operate==1">0,1,0,0,0,</if>
+		<if test="operate==2">0,0,1,0,0,</if>
+		<if test="operate==3">0,0,0,1,0,</if>
+		<if test="operate==4">0,0,0,0,1,</if>
+		#{time},#{version});
+	</insert>
+	<update id="updateEntOper" parameterType="Param">
+		UPDATE np_ori_eoper
+		<set>
+			<if test="operate==5">notice=notice+1,</if>
+			<if test="operate==6">DETIAL=DETIAL+1,</if>
+		</set>
+		WHERE APPID=#{appid} and SID=#{sid} and time=#{time} and
+		GYSDKV=#{version}
+	</update>
+	<insert id="insertEntOper" parameterType="Param">
+		INSERT INTO
+		np_ori_eoper(APPID,SID,NOTICE,DETIAL,TIME,gysdkv)
+		VALUES
+		(#{appid},#{sid},
+		<if test="operate==5">1,0,</if>
+		<if test="operate==6">0,1,</if>
+		#{time},#{version});
+	</insert>
+</mapper>

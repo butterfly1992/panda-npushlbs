@@ -1,0 +1,5 @@
+/jdbc.properties
+/lbs/
+/log4j.properties
+/spring-common-config.xml
+/spring-mybatis-config.xml
